@@ -5,7 +5,15 @@ CREATE TABLE github_user_details (
   emails    JSON NOT NULL
 );
 
+
 CREATE TABLE github_tokens (
+  id             SERIAL PRIMARY KEY,
+  github_user_id INTEGER REFERENCES github_user_details (id),
+  value          JSON NOT NULL
+);
+
+
+CREATE TABLE jwt_tokens (
   id             SERIAL PRIMARY KEY,
   github_user_id INTEGER REFERENCES github_user_details (id),
   value          TEXT NOT NULL

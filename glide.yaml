@@ -1,0 +1,18 @@
+package: github.com/ykhrustalev/slider-push
+import:
+- package: github.com/urfave/negroni
+  version: ^0.2.0
+- package: github.com/rs/cors
+  version: ^1.0.0
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: gopkg.in/yaml.v2
+- package: golang.org/x/oauth2
+- package: github.com/go-pg/pg
+  version: ^6.0.5
+- package: github.com/jinzhu/inflection
+- package: github.com/dgrijalva/jwt-go
+  version: ^3.0.0
+- package: github.com/denkyl08/negroniJWT
+- package: github.com/docker/libtrust

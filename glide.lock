@@ -1,0 +1,53 @@
+hash: 6021424ca5706c93125c76aaeaadbe79e473861b6da5ebab921505238c4c8db3
+updated: 2017-04-20T08:31:22.631066595+01:00
+imports:
+- name: github.com/denkyl08/negroniJWT
+  version: 4089f747585fe136ad26a1d107a4f849926affe2
+- name: github.com/dgrijalva/jwt-go
+  version: d2709f9f1f31ebcda9651b03077758c1f3a0018c
+- name: github.com/docker/libtrust
+  version: aabc10ec26b754e797f9028f4589c5b7bd90dc20
+- name: github.com/go-pg/pg
+  version: 1ea5295d97ab07c71c39c34698ecbfdfba54b1a8
+  subpackages:
+  - internal
+  - internal/parser
+  - internal/pool
+  - orm
+  - types
+- name: github.com/golang/protobuf
+  version: 2402d76f3d41f928c7902a765dfc872356dd3aad
+  subpackages:
+  - proto
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/jinzhu/inflection
+  version: 74387dc39a75e970e7a3ae6a3386b5bd2e5c5cff
+- name: github.com/rs/cors
+  version: a62a804a8a009876ca59105f7899938a1349f4b3
+- name: github.com/rs/xhandler
+  version: d9d9599b6aaf6a058cb7b1f48291ded2cbd13390
+- name: github.com/urfave/negroni
+  version: fde5e16d32adc7ad637e9cd9ad21d4ebc6192535
+- name: golang.org/x/net
+  version: d4c55e66d8c3a2f3382d264b08e3e3454a66355a
+  subpackages:
+  - context
+- name: golang.org/x/oauth2
+  version: 314dd2c0bf3ebd592ec0d20847d27e79d0dbe8dd
+  subpackages:
+  - github
+  - internal
+- name: google.golang.org/appengine
+  version: 08a149cfaee099e6ce4be01c0113a78c85ee1dee
+  subpackages:
+  - internal
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
+- name: gopkg.in/yaml.v2
+  version: a5b47d31c556af34a302ce5d659e6fea44d90de0
+testImports: []
