@@ -3,9 +3,6 @@ package jwtutils
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/denkyl08/negroniJWT"
-	"net/http"
 )
 
 type Claims struct {
@@ -36,18 +33,4 @@ func NewClaimsFromMap(raw map[string]interface{}) (*Claims, error) {
 		return nil, err
 	}
 	return &claims, nil
-}
-
-func GetClaims(req *http.Request) (*Claims, error) {
-	claimsMap, ok := negroniJWT.Get(req)
-	if !ok {
-		return nil, errors.New("missing token in request")
-	}
-
-	claims, err := NewClaimsFromMap(claimsMap)
-	if err != nil {
-		return nil, fmt.Errorf("malformated token data, %s", err)
-	}
-
-	return claims, nil
 }

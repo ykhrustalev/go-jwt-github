@@ -13,11 +13,7 @@ import (
 
 func CreateGithubUserHandler(db *pg.DB, githubAuth *githubapi.Auth) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		claims, err := jwtutils.GetClaims(req)
-		if err != nil {
-			jsonhttp.ErrorResponse(w, "invalid token", err, 401)
-			return
-		}
+		claims := req.Context().Value("claims").(*jwtutils.Claims)
 
 		githubToken, err := dao.GetGithubTokenForUser(db, claims.UserId)
 		if err != nil {

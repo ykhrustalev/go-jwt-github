@@ -10,13 +10,9 @@ import (
 
 func CreateLogoutHandler(db *pg.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		claims, err := jwtutils.GetClaims(req)
-		if err != nil {
-			jsonhttp.ErrorResponse(w, "invalid token", err, 401)
-			return
-		}
+		claims := req.Context().Value("claims").(*jwtutils.Claims)
 
-		err = dao.DeleteJwtToken(db, claims.TokenId)
+		err := dao.DeleteJwtToken(db, claims.TokenId)
 		if err != nil {
 			jsonhttp.ErrorResponse500(w, "failed to save JwtToken", err)
 			return

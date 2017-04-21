@@ -8,6 +8,7 @@ import (
 	"github.com/urfave/negroni"
 	"github.com/ykhrustalev/exploregithub/githubapi"
 	"github.com/ykhrustalev/exploregithub/handlers"
+	"github.com/ykhrustalev/exploregithub/jwtutils"
 	"net/http"
 )
 
@@ -22,27 +23,33 @@ func OpenDb(conf *DatabaseConfig) *pg.DB {
 }
 
 func Server(config *Config) *negroni.Negroni {
-	mux := http.NewServeMux()
-
-	// TODO: remove
+	// JWT auto settings
 	negroniJWT.Init(false, "private.key", "public.key")
 
 	githubAuth := githubapi.NewAuth(config.OAuth.ClientId, config.OAuth.ClientSecret)
+
 	db := OpenDb(&config.Database)
 
-	// Serve our event subscription web handler
+	jwtAuthHandler := negroni.HandlerFunc(jwtutils.CreateAuthMiddleware(db))
+
+	mux := http.NewServeMux()
 	mux.HandleFunc("/login", handlers.CreateLoginHandler(db, githubAuth))
-	mux.HandleFunc("/logout", handlers.CreateLogoutHandler(db))
 	mux.HandleFunc("/auth_callback", handlers.CreateAuthCallbackHandler(db, githubAuth))
-	mux.HandleFunc("/github/user", handlers.CreateGithubUserHandler(db, githubAuth))
+
+	mux.Handle("/github/user", negroni.New(
+		jwtAuthHandler,
+		negroni.Wrap(handlers.CreateGithubUserHandler(db, githubAuth)),
+	))
+	mux.Handle("/logout", negroni.New(
+		jwtAuthHandler,
+		negroni.Wrap(handlers.CreateLogoutHandler(db)),
+	))
 
 	n := negroni.New(
 		cors.Default(),
 		negroni.HandlerFunc(negroniJWT.Middleware),
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
-		// TODO: need?
-		negroni.NewStatic(http.Dir("public")),
 	)
 
 	n.UseHandler(mux)

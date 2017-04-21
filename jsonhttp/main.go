@@ -6,12 +6,17 @@ import (
 	"net/http"
 )
 
+type Message struct {
+	Message string
+	Error   string
+}
+
 func ErrorResponse(w http.ResponseWriter, message string, err error, httpCode int) {
 	fmt.Printf("%s, error: %v\n", message, err)
-	obj := struct {
-		Message string
-		Error   string
-	}{message, err.Error()}
+	obj := Message{message, ""}
+	if err != nil {
+		obj.Error = err.Error()
+	}
 	Response(w, obj, httpCode)
 }
 
