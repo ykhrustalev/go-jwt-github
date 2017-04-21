@@ -1,0 +1,14 @@
+oauth:
+  client_id: xxx1a85a9a725c91db0
+  client_secret: xxxx903198bca59f9e00c10654663eee053d5837
+
+database:
+  host: app
+  port: 5432
+  user: app
+  password:
+  database: app
+  pool_size: 10
+
+server:
+  bind: 0:80
