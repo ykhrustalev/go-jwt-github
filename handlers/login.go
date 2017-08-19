@@ -11,8 +11,19 @@ import (
 	"net/http"
 )
 
+func CreatePreLoginHandler(db *pg.DB, githubAuth *githubapi.Auth) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		jwtToken, err := generateJwtToken(db, 0)
+		if err != nil {
+			log.Println("failed to generate JWT record", err)
+			return err
+		}
+	}
+}
+
 func CreateLoginHandler(db *pg.DB, githubAuth *githubapi.Auth) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+
 		// user with valid token should not get a new
 		// TODO: ???
 		claimsMap, ok := negroniJWT.Get(req)

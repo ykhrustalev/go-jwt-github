@@ -13,6 +13,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"sync/atomic"
+	"sync"
 )
 
 func requestBasicData(code string, githubAuth *githubapi.Auth) (*oauth2.Token, *githubapi.User, []githubapi.UserEmail, error) {
@@ -93,6 +95,33 @@ func generateJwtToken(tx *pg.Tx, userId int64) (*dao.JwtToken, error) {
 	return record, nil
 }
 
+type SessionStore struct {
+	mw sync.RWMutex
+	Sessions map[string]string
+}
+
+func NewSessionStore() *SessionStore {
+	return &SessionStore{Sessions: make(map[string]string)}
+}
+
+func(store *SessionStore) Save(session string) {
+	store.mw.Lock()
+	defer store.mw.Unlock()
+
+	store.Sessions[session] = ""
+
+	go func() {
+		time.Sleep(60 * time.Second)
+		store.Delete(session)
+	}()
+}
+func(store *SessionStore) Delete(session string) {
+	store.mw.Lock()
+	defer store.mw.Unlock()
+
+	delete(store.Sessions, session)
+}
+
 func CreateAuthCallbackHandler(db *pg.DB, githubAuth *githubapi.Auth) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, req *http.Request) {
@@ -139,7 +168,35 @@ func CreateAuthCallbackHandler(db *pg.DB, githubAuth *githubapi.Auth) http.Handl
 			return
 		}
 
-		jsonhttp.Response200(w, struct{ Token string }{jwtToken.Value})
 
+		w.WriteHeader(http.StatusOK)
+		//lp := filepath.Join("templates", "auth_callback_success.html")
+		//
+		//tmpl := template.Must(template.ParseFiles(lp))
+		//
+		//tmpl.ExecuteTemplate(w, "layout", nil)
+
+		body := `
+		<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login success</title>
+</head>
+<body>
+
+<script>
+window.opener.HandlePopupResult('123');
+    //window.opener.document.getElementById("token").innerHTML = '123';
+</script>
+
+</body>
+</html>
+
+		`
+
+		w.Write([]byte(body))
+
+		//jsonhttp.Response200(w, struct{ Token string }{jwtToken.Value})
 	}
 }
